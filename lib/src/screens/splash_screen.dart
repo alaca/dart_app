@@ -21,7 +21,7 @@ class SplashScreen extends StatelessWidget {
             case Status.Authenticated:
               return Navigator.pushReplacementNamed(context, 'home');
           } 
-          
+
         });
 
         return Scaffold(
@@ -29,7 +29,15 @@ class SplashScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.black
             ),
-            child: Center(child: _logoImage())
+            child: Center(
+              child: Hero(
+              tag: 'authTopStaticElements',
+              child: Image.asset( 
+                'assets/images/icon.png',
+                width: 230.0,
+                height: 230.0
+              )
+            ))
           ) 
         );
 
@@ -39,16 +47,5 @@ class SplashScreen extends StatelessWidget {
 
   }
 
-  Widget _logoImage() {
-    return Hero(
-      tag: 'authTopStaticElements',
-      child: Image.asset( 
-        'assets/images/icon.png',
-        width: 230.0,
-        height: 230.0
-      ),
-    );
-  }
-  
 
 }

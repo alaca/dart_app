@@ -25,34 +25,3 @@ class AuthScreenRaisedButton extends StatelessWidget {
   }
 
 }
-
-
-Future<Widget> signOutButton(BuildContext context, AuthProvider auth) {
-
-  return showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Sign Out?'),
-        content: Text('Sign out from application?'),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('YES'),
-            textColor: Color(0xffffcc00),
-            onPressed: (){
-              Navigator.pop(context);
-            },
-          ),
-          FlatButton(
-            child: Text('NO'),
-            textColor: Color(0xffffcc00),
-            onPressed: (){
-              Navigator.pop(context);
-            },
-          )
-        ],
-      );
-    }
-  );
-}
