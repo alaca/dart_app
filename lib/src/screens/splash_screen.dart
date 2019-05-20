@@ -13,8 +13,15 @@ class SplashScreen extends StatelessWidget {
       builder: (context, AuthProvider auth, _) {
 
         Future.delayed(Duration(seconds: 2), () async {
-          final user = await auth.currentUser;
-          Navigator.pushReplacementNamed(context, (user != null) ? 'home' : 'login');
+
+          switch (auth.status) {
+            case Status.Unauthenticated:
+            case Status.Authenticating:
+              return Navigator.pushReplacementNamed(context, 'login');
+            case Status.Authenticated:
+              return Navigator.pushReplacementNamed(context, 'home');
+          } 
+          
         });
 
         return Scaffold(
