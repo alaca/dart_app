@@ -12,7 +12,7 @@ class App extends StatelessWidget {
   
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(builder: (_) => AuthProvider()),
+        ChangeNotifierProvider(builder: (_) => AuthProvider.instance()),
       ],
       child: MaterialApp(
         title: 'iTrak',
