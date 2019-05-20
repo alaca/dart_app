@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "103022599394",
+    "firebase_url": "https://itrak-20374.firebaseio.com",
+    "project_id": "itrak-20374",
+    "storage_bucket": "itrak-20374.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:103022599394:android:93975b10b7555446",
+        "android_client_info": {
+          "package_name": "com.example.itrak"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "103022599394-amio1cf9c4a1bqqn1kaff0ntfhes39k4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwaTWJaMl4WQ3KByxLoakOe6kHYri5AuI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "103022599394-amio1cf9c4a1bqqn1kaff0ntfhes39k4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
