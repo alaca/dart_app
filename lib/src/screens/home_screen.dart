@@ -7,6 +7,8 @@ class HomeScreen extends StatelessWidget {
 
   Widget build(context) {
 
+    AuthProvider auth = Provider.of<AuthProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('iTrak'),
@@ -15,10 +17,10 @@ class HomeScreen extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.exit_to_app),
-            onPressed:() => Consumer(
-              builder: (context, AuthProvider auth, _) {
-                signOutButton(context, auth);
-              })
+            onPressed:() async {
+              await auth.signOut();
+              Navigator.pushReplacementNamed(context, 'login');
+            }
           )
         ],
         iconTheme: IconThemeData(
