@@ -3,7 +3,6 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/buttons.dart';
-import '../widgets/text.dart';
 import '../decorations/text_fields.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -130,7 +129,10 @@ class _LoginScreenState extends State<LoginScreen> with AuthValidators {
             } else {
               _key.currentState.showSnackBar(SnackBar(
                 backgroundColor: Colors.red,
-                content: ErrorText(text: auth.error)
+                content: Text(
+                  auth.error, 
+                  textAlign: TextAlign.center
+                )
               ));
             }
 
