@@ -1,9 +1,9 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/buttons.dart';
+import '../widgets/text.dart';
 import '../decorations/text_fields.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> with AuthValidators {
 
   final _formKey = GlobalKey<FormState>();
+  final _key = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> with AuthValidators {
         valueColor: AlwaysStoppedAnimation<Color>(Colors.yellow),
       ),
       child: Scaffold(
+        key: _key,
         body: Container(
           padding: EdgeInsets.only(
             top: 70.0,
@@ -84,6 +86,7 @@ class _LoginScreenState extends State<LoginScreen> with AuthValidators {
   Widget _emailField(AuthProvider auth) {
     return TextFormField(
       validator: (email) => validateEmail(email),
+      onSaved: (value) => auth.email = value,
       keyboardType: TextInputType.emailAddress,
       style: TextStyle(color: Colors.black),
       textAlign: TextAlign.center,
@@ -97,6 +100,7 @@ class _LoginScreenState extends State<LoginScreen> with AuthValidators {
     return TextFormField(
       validator: (password) => validatePassword(password),
       obscureText: true,
+      onSaved: (value) => auth.password = value,
       style: TextStyle(color: Colors.black),
       textAlign: TextAlign.center,
       decoration: authScreenTextFieldDecoration.copyWith(
@@ -117,7 +121,18 @@ class _LoginScreenState extends State<LoginScreen> with AuthValidators {
 
           if (_formKey.currentState.validate()) {
 
-            await Future.delayed(Duration(seconds: 3), () => auth.isLoading = false);  
+            _formKey.currentState.save();
+
+            final status = await auth.signInWithEmailAndPassword(email: auth.email, password: auth.password);
+
+            if ( status ) {
+              Navigator.pushReplacementNamed(context, 'home');
+            } else {
+              _key.currentState.showSnackBar(SnackBar(
+                backgroundColor: Colors.red,
+                content: ErrorText(text: auth.error)
+              ));
+            }
 
           } else {
 
@@ -126,6 +141,8 @@ class _LoginScreenState extends State<LoginScreen> with AuthValidators {
             if (!auth.autovalidate)
               auth.autovalidate = true;
           }
+
+          auth.isLoading = false;
 
         }
       ),
