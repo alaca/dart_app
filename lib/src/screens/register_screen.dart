@@ -14,11 +14,12 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> with AuthValidators {
 
   final _formKey = GlobalKey<FormState>();
+  final _key = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
 
-    AuthProvider auth =  Provider.of<AuthProvider>(context);
+    AuthProvider auth = Provider.of<AuthProvider>(context);
 
     return ModalProgressHUD(
       inAsyncCall: auth.isLoading,
@@ -27,6 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> with AuthValidators {
         valueColor: AlwaysStoppedAnimation<Color>(Colors.yellow),
       ),
       child: Scaffold(
+        key: _key,
         body: Container(
           padding: EdgeInsets.only(
             top: 70.0,
@@ -60,9 +62,6 @@ class _RegisterScreenState extends State<RegisterScreen> with AuthValidators {
                   )
                 ),
                 _registerButton(context, auth),
-                // if (auth.error != null) ...[
-                //   ErrorText(text: 'Something is wrong',)
-                // ],
                 SizedBox(height: 70),
                 _loginButton(context, auth)
               ],
@@ -136,16 +135,15 @@ class _RegisterScreenState extends State<RegisterScreen> with AuthValidators {
 
             _formKey.currentState.save();
 
-            try {
+            final status = await auth.createUserWithEmailAndPassword(email: auth.email, password: auth.password);
 
-              final user = await auth.instance.createUserWithEmailAndPassword(email: auth.email, password: auth.password);
-
-              if (user != null) {
-                Navigator.pushReplacementNamed(context, 'home');
-              }
-              
-            } catch(e) {
-              print(e);
+            if ( status ) {
+              Navigator.pushReplacementNamed(context, 'home');
+            } else {
+              _key.currentState.showSnackBar(SnackBar(
+                backgroundColor: Colors.red,
+                content: ErrorText(text: auth.error)
+              ));
             }
 
           } else {
