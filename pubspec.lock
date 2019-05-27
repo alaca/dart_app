@@ -66,7 +66,7 @@ packages:
       name: http
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.0+2"
+    version: "0.11.3+17"
   http_parser:
     dependency: transitive
     description:
@@ -115,7 +115,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.1+1"
   quiver:
     dependency: transitive
     description:
@@ -170,6 +170,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.4"
+  test_tmdb:
+    dependency: "direct main"
+    description:
+      name: test_tmdb
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2-alpha.2"
   typed_data:
     dependency: transitive
     description:
