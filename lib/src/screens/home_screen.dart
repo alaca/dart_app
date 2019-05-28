@@ -1,8 +1,31 @@
+import 'dart:async';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../providers/auth_provider.dart';
+import '../resources/tmdb_repository.dart';
+import '../models/user_model.dart';
+import '../widgets/user_card.dart';
 
-class HomeScreen extends StatelessWidget {
+
+class HomeScreen extends StatefulWidget {
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  Future<List<UserModel>> users;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    users = TMDBRepository().getTopRated();
+
+  }
 
   Widget build(context) {
 
@@ -57,27 +80,65 @@ class HomeScreen extends StatelessWidget {
 
       ),
       body: Container(
-        padding: EdgeInsets.only(
-          top: 60.0,
-          left: 60.0,
-          right: 60.0
-        ),
-        decoration: BoxDecoration(
-          color: Colors.black
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Text('Logged in!', style: TextStyle(
-              color: Colors.white
-            ))
-          ],
+        padding: EdgeInsets.all(10.0),
+        color: Colors.black,
+        child: FutureBuilder(
+          future: users,
+          builder: ( context, snapshot ) {
+
+            if (snapshot.hasData) {
+
+              return StaggeredGridView.countBuilder(
+                crossAxisCount: 2,
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int i) {
+                  return UserCard( snapshot.data[i], index: i, );
+                },
+                staggeredTileBuilder: (int i) {
+                  if ( i == 0 ) {
+                    return StaggeredTile.fit(2);
+                  }
+
+                  return StaggeredTile.fit(1);
+                },
+                mainAxisSpacing: 20.0,
+                crossAxisSpacing: 20.0,
+              );
+
+            } 
+
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xffffcc00))
+              )
+            );
+
+
+          },
         )
       ) 
     );
 
   }
 
+  _getImageInfo( image ) async {
+
+      Image downloadImage = Image.network(image);
+
+      final ImageStream stream = downloadImage.image.resolve(ImageConfiguration.empty);
+      final Completer<void> completer = Completer<void>();
+      stream.addListener((ImageInfo info, bool syncCall) => completer.complete());
+
+      return FutureBuilder(
+        future: completer.future,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            return snapshot.data.width;
+          }
+        },
+      );
+
+  }
 
 
 }

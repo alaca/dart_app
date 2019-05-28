@@ -55,6 +55,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_staggered_grid_view:
+    dependency: "direct main"
+    description:
+      name: flutter_staggered_grid_view
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.7"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -170,13 +177,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.4"
-  test_tmdb:
-    dependency: "direct main"
-    description:
-      name: test_tmdb
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.2-alpha.2"
   typed_data:
     dependency: transitive
     description:
