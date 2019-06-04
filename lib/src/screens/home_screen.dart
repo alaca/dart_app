@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../providers/auth_provider.dart';
-import '../resources/tmdb_repository.dart';
+import '../providers/users_provider.dart';
+import '../resources/repository.dart';
 import '../models/user_model.dart';
 import '../widgets/user_card.dart';
+
 
 
 class HomeScreen extends StatefulWidget {
@@ -17,25 +19,28 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   int _initialPage;
-  Future<List<UserModel>> _users;
+  AuthProvider auth;
+  UsersProvider users;
+  Repository repository;
   ScrollController _controller;
 
-  @override
-  void initState() {
 
-    _initialPage = 1;
-    _users = TMDBRepository().getTopRated(page: _initialPage);
+  void didChangeDependencies() {
+
+        _initialPage = 1;
     _controller = ScrollController();
     _controller.addListener(_scrollListener);
 
+        auth = Provider.of<AuthProvider>(context);
+    users = Provider.of<UsersProvider>(context);
 
-    super.initState();
+    users.getPopular(1);
 
   }
 
   Widget build(context) {
 
-    AuthProvider auth = Provider.of<AuthProvider>(context);
+   
 
     return Scaffold(
       appBar: AppBar(
@@ -88,8 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Container(
         padding: EdgeInsets.all(10.0),
         color: Colors.black,
-        child: FutureBuilder(
-          future: _users,
+        child: StreamBuilder(
+          stream: users.popular,
           builder: ( context, snapshot ) {
 
             if (snapshot.hasData) {
@@ -132,12 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
   _scrollListener() {
 
     if (_controller.offset >= _controller.position.maxScrollExtent && !_controller.position.outOfRange) {
-      setState(() {
-
-        final Future<List<UserModel>> freshUsers = TMDBRepository().getTopRated(page: _initialPage++);
-
-        _users.add(freshUsers);
-      });
+      users.getPopular(_initialPage++);
     }
 
   }
