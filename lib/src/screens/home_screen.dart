@@ -16,13 +16,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  Future<List<UserModel>> users;
+  int _initialPage;
+  Future<List<UserModel>> _users;
+  ScrollController _controller;
 
   @override
   void initState() {
+
+    _initialPage = 1;
+    _users = TMDBRepository().getTopRated(page: _initialPage);
+    _controller = ScrollController();
+    _controller.addListener(_scrollListener);
+
+
     super.initState();
-    
-    users = TMDBRepository().getTopRated();
 
   }
 
@@ -82,12 +89,13 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.all(10.0),
         color: Colors.black,
         child: FutureBuilder(
-          future: users,
+          future: _users,
           builder: ( context, snapshot ) {
 
             if (snapshot.hasData) {
 
               return StaggeredGridView.countBuilder(
+                controller: _controller,
                 crossAxisCount: 2,
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int i) {
@@ -120,24 +128,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   }
 
-  _getImageInfo( image ) async {
 
-      Image downloadImage = Image.network(image);
+  _scrollListener() {
 
-      final ImageStream stream = downloadImage.image.resolve(ImageConfiguration.empty);
-      final Completer<void> completer = Completer<void>();
-      stream.addListener((ImageInfo info, bool syncCall) => completer.complete());
+    if (_controller.offset >= _controller.position.maxScrollExtent && !_controller.position.outOfRange) {
+      setState(() {
 
-      return FutureBuilder(
-        future: completer.future,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return snapshot.data.width;
-          }
-        },
-      );
+        final Future<List<UserModel>> freshUsers = TMDBRepository().getTopRated(page: _initialPage++);
+
+        _users.add(freshUsers);
+      });
+    }
 
   }
+
 
 
 }

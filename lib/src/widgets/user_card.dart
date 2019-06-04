@@ -25,25 +25,39 @@ class UserCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _showImage()
+          _showImage(),
+          _showName()
         ]
       )
     );
   }
 
 
+  Widget _showName() {
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Text( data.name, 
+        style: TextStyle(color: Colors.white )
+      )
+    );
+          
+  }
 
   Widget _showImage() {
     return  ClipRRect(
-      borderRadius: BorderRadius.circular(20.0),
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20.0), 
+        topRight: Radius.circular(20.0)
+      ),
       child: FadeInImage.assetNetwork(
+        excludeFromSemantics: true,
         fadeInDuration: Duration(milliseconds: 300),
         placeholder: 'assets/images/loader.png',
-        image: 'https://image.tmdb.org/t/p/original/' + data.image,
-        height: (index == 0) ? 160.0 : null,
-        fit: BoxFit.fitWidth,
-        fadeInCurve: Curves.easeInCirc,
-      ),
+        image: 'https://image.tmdb.org/t/p/w300/' + data.image,
+        height: 160.0,
+        fit: BoxFit.fitWidth
+      )
+      
     );
   }
 
