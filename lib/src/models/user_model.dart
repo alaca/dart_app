@@ -8,7 +8,7 @@ class UserModel {
 
   UserModel.fromJson(Map<String, dynamic> json )
     : id = json['id'],
-      image = json['profile_path'],
+      image = json['profile_path'] ?? '',
       name = json['name'];
 
 }
