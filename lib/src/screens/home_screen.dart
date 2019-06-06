@@ -19,28 +19,27 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   int _initialPage;
-  AuthProvider auth;
-  UsersProvider users;
-  Repository repository;
   ScrollController _controller;
+  UsersProvider usersProvider;
 
 
-  void didChangeDependencies() {
+  void initState() {
 
-        _initialPage = 1;
+    super.initState();
+
+    _initialPage = 1;
     _controller = ScrollController();
     _controller.addListener(_scrollListener);
-
-        auth = Provider.of<AuthProvider>(context);
-    users = Provider.of<UsersProvider>(context);
-
-    users.getPopular(1);
 
   }
 
   Widget build(context) {
 
-   
+   AuthProvider auth = Provider.of<AuthProvider>(context);
+   usersProvider = Provider.of<UsersProvider>(context);
+
+   print( usersProvider.users );
+
 
     return Scaffold(
       appBar: AppBar(
@@ -94,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.all(10.0),
         color: Colors.black,
         child: StreamBuilder(
-          stream: users.popular,
+          stream: usersProvider.users,
           builder: ( context, snapshot ) {
 
             if (snapshot.hasData) {
@@ -136,8 +135,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _scrollListener() {
 
+    print( usersProvider );
+
     if (_controller.offset >= _controller.position.maxScrollExtent && !_controller.position.outOfRange) {
-      users.getPopular(_initialPage++);
+      usersProvider.getPopular(_initialPage++);
     }
 
   }

@@ -10,11 +10,13 @@ import 'screens/home_screen.dart';
 class App extends StatelessWidget {
 
   Widget build(context) {
+
+
   
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(builder: (_) => AuthProvider.instance()),
-        ChangeNotifierProvider(builder: (_) => UsersProvider()),
+        Provider(builder: (_) => UsersProvider() ),
       ],
       child: MaterialApp(
         title: 'iTrak',
@@ -26,7 +28,10 @@ class App extends StatelessWidget {
             case 'home':
 
               return MaterialPageRoute(
-                builder: (context) => HomeScreen()
+                builder: (context) {
+                  Provider.of<UsersProvider>(context).getPopular(1);
+                  return HomeScreen();
+                }
               );
 
             case 'login':
