@@ -11,12 +11,10 @@ class App extends StatelessWidget {
 
   Widget build(context) {
 
-
-  
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(builder: (_) => AuthProvider.instance()),
-        Provider(builder: (_) => UsersProvider() ),
+        ChangeNotifierProvider(builder: (_) => UsersProvider() ),
       ],
       child: MaterialApp(
         title: 'iTrak',
@@ -26,10 +24,9 @@ class App extends StatelessWidget {
           switch(settings.name) {
 
             case 'home':
-
+            
               return MaterialPageRoute(
                 builder: (context) {
-                  Provider.of<UsersProvider>(context).getPopular(1);
                   return HomeScreen();
                 }
               );

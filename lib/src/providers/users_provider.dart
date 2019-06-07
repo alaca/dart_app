@@ -1,26 +1,32 @@
 
 import 'dart:async';
-import 'package:rxdart/rxdart.dart';
+import 'package:flutter/widgets.dart';
 import '../resources/repository.dart';
 import '../models/user_model.dart';
 
 
-class UsersProvider {
+class UsersProvider with ChangeNotifier {
 
   final _repository = Repository();
-  final _users = PublishSubject<List<UserModel>>();
 
+  List<UserModel> _users = [];
 
-  Observable<List<UserModel>> get users => _users.stream;
+  getUsers() async {
 
-  getPopular( int page ) async {
-    final users = await _repository.getPopular(page);
-    _users.sink.add(users);
+    // Initial fetch
+    if ( _users.isEmpty )
+      return await _repository.getPopular(1);
+
+    return _users;
+
   }
 
+  fetchUsers(int page ) async {
 
-  dispose() {
-    _users.close();
+    _users.addAll(await _repository.getPopular(page));
+
+    notifyListeners();
+
   }
 
 }
