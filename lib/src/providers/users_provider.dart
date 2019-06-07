@@ -15,13 +15,15 @@ class UsersProvider with ChangeNotifier {
 
     // Initial fetch
     if ( _users.isEmpty )
-      return await _repository.getPopular(1);
+      _users.addAll(await _repository.getPopular(1));
 
     return _users;
 
   }
 
   fetchUsers(int page ) async {
+
+    print(page);
 
     _users.addAll(await _repository.getPopular(page));
 

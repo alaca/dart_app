@@ -131,10 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _scrollListener() {
 
-    if (_controller.offset >= _controller.position.maxScrollExtent && !_controller.position.outOfRange) 
-       usersProvider.fetchUsers(_currentPage++); 
+    if (_controller.offset >= _controller.position.maxScrollExtent && !_controller.position.outOfRange)
+      usersProvider.fetchUsers(++_currentPage); 
     
-
   }
 
 
