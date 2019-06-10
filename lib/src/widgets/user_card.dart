@@ -20,44 +20,86 @@ class UserCard extends StatelessWidget {
         borderRadius: BorderRadius.all(
             Radius.circular(20.0) 
         ),
-        color: Colors.black
+        color: Colors.black,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Stack(
+        alignment: Alignment.center,  
         children: <Widget>[
           _showImage(),
-          _showName()
-        ]
+          _showTopIcon(),
+          _showBottomIcons()
+        ],
       )
     );
   }
 
+  Widget _showTopIcon() {
 
-  Widget _showName() {
-    return Padding(
-      padding: EdgeInsets.all(10.0),
-      child: Text( data.name, 
-        style: TextStyle(color: Colors.white )
+    return Positioned(
+      top: 10.0,
+      right: 0.0,
+      child: Row(
+        children: <Widget>[
+          Icon( 
+            Icons.more_vert, 
+            size: 30.0,
+            color: Colors.white,
+          )
+        ],
       )
     );
-          
+
+  }
+
+  Widget _showBottomIcons() {
+
+    return Positioned(
+      bottom: 10.0,
+      right: 10.0,
+      child: Row(
+        children: <Widget>[
+          Icon( 
+            Icons.star_border, 
+            size: 22.0,
+            color: Colors.white,
+          ),
+          Padding(
+            padding: const EdgeInsets.only( top: 4.0, right: 10.0),
+            child: Text(
+              data.popularity.toStringAsFixed(1) + 'k',
+              style: TextStyle(
+                color: Colors.white, 
+                fontSize: 10.0
+                ),
+
+            ),
+          ),
+          Icon( 
+            Icons.share, 
+            size: 22.0,
+            color: Colors.white,
+          ),
+        ],
+      )
+    );
+
   }
 
   Widget _showImage() {
-    return  ClipRRect(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(20.0), 
-        topRight: Radius.circular(20.0)
+    return  SizedBox(
+      width: double.infinity,
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+        child: FadeInImage.assetNetwork(
+          excludeFromSemantics: true,
+          fadeInDuration: Duration(milliseconds: 300),
+          placeholder: 'assets/images/loader.png',
+          image: 'https://image.tmdb.org/t/p/w300/' + data.image,
+          height: 180.0,
+          fit: BoxFit.fitWidth
+        )
+        
       ),
-      child: FadeInImage.assetNetwork(
-        excludeFromSemantics: true,
-        fadeInDuration: Duration(milliseconds: 300),
-        placeholder: 'assets/images/loader.png',
-        image: 'https://image.tmdb.org/t/p/w300/' + data.image,
-        height: 160.0,
-        fit: BoxFit.fitWidth
-      )
-      
     );
   }
 
