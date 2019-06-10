@@ -14,24 +14,27 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   int _currentPage = 1;
   ScrollController _controller = ScrollController();
-  UsersProvider usersProvider;
+  TabController _tabController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  void initState() {
+  UsersProvider usersProvider;
 
-    super.initState();
+  void initState() {
+     _tabController = TabController(length: 5, vsync: this );
     _controller.addListener(_scrollListener);
+
+    
+    super.initState();
 
   }
 
   Widget build(context) {
 
-   AuthProvider auth = Provider.of<AuthProvider>(context);
-   usersProvider = Provider.of<UsersProvider>(context);
+    usersProvider = Provider.of<UsersProvider>(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -50,8 +53,25 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         iconTheme: IconThemeData(
           color: Colors.white,
-        )
-
+        ),
+        bottom: TabBar(
+          unselectedLabelColor: Colors.white,
+          labelColor: Color(0xffffcc00),
+          isScrollable: false,
+          tabs: [
+            Tab( text: 'Live'),
+            Tab( text: 'Movies' ),
+            Tab( text: 'Games' ),
+            Tab( text: 'Podcast' ),
+            Tab( text: 'Photos' ),
+          ],
+          controller: _tabController,
+          indicatorColor: Color(0xffffcc00),
+          indicatorSize: TabBarIndicatorSize.label,
+          labelPadding: EdgeInsets.all(0.00),
+  
+        ),
+        bottomOpacity: 1,
       ),
       body: Container(
         padding: EdgeInsets.all(10.0),
@@ -116,40 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               title: Text('Sign out'),
-              onTap: () {
-
-                return showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Sign Out?'),
-                      content: Text('Sign out from application?'),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-                      actions: <Widget>[
-                        FlatButton(
-                          child: Text('YES'),
-                          textColor: Color(0xffffcc00),
-                          onPressed: () async {
-                            await auth.signOut();
-                            Navigator.pop(context);
-                            Navigator.pushReplacementNamed(context, 'login');
-                          },
-                        ),
-                        FlatButton(
-                          child: Text('NO'),
-                          textColor: Color(0xffffcc00),
-                          onPressed: (){
-                            Navigator.pop(context);
-                          },
-                        )
-                      ],
-                    );
-                  }
-                );
-
-
-              }
-
+              onTap: () => _showDialog( context )
             ),
           ],
         ),
@@ -164,6 +151,41 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_controller.offset >= _controller.position.maxScrollExtent && !_controller.position.outOfRange)
       usersProvider.fetchUsers(++_currentPage); 
     
+  }
+
+  _showDialog( BuildContext context ) {
+
+    AuthProvider auth = Provider.of<AuthProvider>(context);
+
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Sign Out?'),
+          content: Text('Sign out from application?'),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('YES'),
+              textColor: Color(0xffffcc00),
+              onPressed: () async {
+                await auth.signOut();
+                Navigator.pop(context);
+                Navigator.pushReplacementNamed(context, 'login');
+              },
+            ),
+            FlatButton(
+              child: Text('NO'),
+              textColor: Color(0xffffcc00),
+              onPressed: (){
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      }
+    );
+
   }
 
 
