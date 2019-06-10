@@ -59,7 +59,7 @@ class UserCard extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Icon( 
-            Icons.star_border, 
+            Icons.favorite_border, 
             size: 22.0,
             color: Colors.white,
           ),
