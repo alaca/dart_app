@@ -86,19 +86,23 @@ class UserCard extends StatelessWidget {
   }
 
   Widget _showImage() {
-    return  SizedBox(
-      width: double.infinity,
-      child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-        child: FadeInImage.assetNetwork(
+
+    final imageWidget = data.image.isEmpty 
+      ? Image.asset('assets/images/loader.png')
+      : FadeInImage.assetNetwork(
           excludeFromSemantics: true,
           fadeInDuration: Duration(milliseconds: 300),
           placeholder: 'assets/images/loader.png',
           image: 'https://image.tmdb.org/t/p/w300/' + data.image,
           height: 180.0,
           fit: BoxFit.fitWidth
-        )
-        
+        );
+ 
+    return  SizedBox(
+      width: double.infinity,
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+        child: imageWidget
       ),
     );
   }

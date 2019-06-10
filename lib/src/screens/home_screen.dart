@@ -16,17 +16,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  int _currentPage;
-  ScrollController _controller;
+  int _currentPage = 1;
+  ScrollController _controller = ScrollController();
   UsersProvider usersProvider;
-
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   void initState() {
 
     super.initState();
-
-    _currentPage = 1;
-    _controller = ScrollController();
     _controller.addListener(_scrollListener);
 
   }
@@ -36,8 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
    AuthProvider auth = Provider.of<AuthProvider>(context);
    usersProvider = Provider.of<UsersProvider>(context);
 
-
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('iTrak'),
         backgroundColor: Colors.black,
@@ -45,38 +42,9 @@ class _HomeScreenState extends State<HomeScreen> {
         automaticallyImplyLeading: false,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: Icon(Icons.menu, size: 30.0),
             onPressed:() {
-
-              return showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Sign Out?'),
-                    content: Text('Sign out from application?'),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text('YES'),
-                        textColor: Color(0xffffcc00),
-                        onPressed: () async {
-                          await auth.signOut();
-                          Navigator.pop(context);
-                          Navigator.pushReplacementNamed(context, 'login');
-                        },
-                      ),
-                      FlatButton(
-                        child: Text('NO'),
-                        textColor: Color(0xffffcc00),
-                        onPressed: (){
-                          Navigator.pop(context);
-                        },
-                      )
-                    ],
-                  );
-                }
-              );
-
+              _scaffoldKey.currentState.openDrawer();
             }
           )
         ],
@@ -123,7 +91,69 @@ class _HomeScreenState extends State<HomeScreen> {
 
           },
         )
-      ) 
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            SizedBox(
+              height: 100.0,
+              child: DrawerHeader(
+                child: Text(
+                  'Settings',
+                  style: TextStyle(color: Colors.white, fontSize: 22.00),
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                ),
+                margin : EdgeInsets.all(0.0),
+                padding: EdgeInsets.all(15.0)
+              ),
+            ),
+            ListTile(
+              title: Text('Profile'),
+              onTap: () {},
+            ),
+            ListTile(
+              title: Text('Sign out'),
+              onTap: () {
+
+                return showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Sign Out?'),
+                      content: Text('Sign out from application?'),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text('YES'),
+                          textColor: Color(0xffffcc00),
+                          onPressed: () async {
+                            await auth.signOut();
+                            Navigator.pop(context);
+                            Navigator.pushReplacementNamed(context, 'login');
+                          },
+                        ),
+                        FlatButton(
+                          child: Text('NO'),
+                          textColor: Color(0xffffcc00),
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },
+                        )
+                      ],
+                    );
+                  }
+                );
+
+
+              }
+
+            ),
+          ],
+        ),
+      ),
     );
 
   }
