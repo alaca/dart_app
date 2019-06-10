@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../providers/auth_provider.dart';
@@ -18,13 +19,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   int _currentPage = 1;
   ScrollController _controller = ScrollController();
-  TabController _tabController;
+  TabController _tabControllerTop;
+  TabController _tabControllerBottom;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   UsersProvider usersProvider;
 
   void initState() {
-     _tabController = TabController(length: 5, vsync: this );
+     _tabControllerTop = TabController(length: 5, vsync: this );
+     _tabControllerBottom = TabController(length: 5, vsync: this );
     _controller.addListener(_scrollListener);
 
     
@@ -38,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     return Scaffold(
       key: _scaffoldKey,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text('iTrak'),
         backgroundColor: Colors.black,
@@ -65,17 +69,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Tab( text: 'Podcast' ),
             Tab( text: 'Photos' ),
           ],
-          controller: _tabController,
+          controller: _tabControllerTop,
           indicatorColor: Color(0xffffcc00),
           indicatorSize: TabBarIndicatorSize.label,
           labelPadding: EdgeInsets.all(0.00),
   
-        ),
-        bottomOpacity: 1,
+        )
       ),
       body: Container(
+        color: Colors.transparent,
         padding: EdgeInsets.all(10.0),
-        color: Colors.black,
         child: FutureBuilder(
           future: usersProvider.getUsers(),
           builder: ( context, snapshot ) {
@@ -141,6 +144,51 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ],
         ),
       ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [Colors.black, Colors.transparent], // wtf. looks like scaffold is adding background color to bottomNavigationBar so this is not working
+            stops: [0.0, 1.0],
+          ),
+        ),
+        child: TabBar(
+
+          tabs: [
+            Tab(
+              icon: Icon( 
+                Icons.my_location, 
+                size: 30.00
+              ),
+              text: 'TrakIT'
+            ),
+            Tab(
+              icon: Icon(Icons.videocam, size: 30.00),
+              text: 'CreateIT'
+            ),
+            Tab(
+              icon: Icon(Icons.next_week, size: 30.00),
+              text: 'WorkIT'
+            ),
+            Tab(
+              icon: Icon(Icons.share, size: 30.00),
+              text: 'SocialIT'
+            ),
+            Tab(
+              icon: Icon(Icons.tune, size: 30.00),
+              text: 'ManageIT'
+            )
+          ],
+          controller: _tabControllerBottom,
+          labelColor: Color(0xffffcc00),
+          unselectedLabelColor: Colors.white,
+          indicatorSize: TabBarIndicatorSize.tab,
+          indicatorColor: Color(0xffffcc00),
+          labelPadding: EdgeInsets.all(0.00),
+          labelStyle: TextStyle(fontSize: 12.00)
+        ),
+      )
     );
 
   }
