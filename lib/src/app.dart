@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../src/providers/auth_provider.dart';
-import '../src/providers/users_provider.dart';
+import '../src/providers/tmdb_provider.dart';
 import 'screens/splash_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
@@ -14,7 +14,7 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(builder: (_) => AuthProvider.instance()),
-        ChangeNotifierProvider(builder: (_) => UsersProvider() ),
+        ChangeNotifierProvider(builder: (_) => TmdbProvider() ),
       ],
       child: MaterialApp(
         title: 'iTrak',

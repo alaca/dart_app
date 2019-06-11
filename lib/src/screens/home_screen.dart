@@ -4,8 +4,10 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../providers/auth_provider.dart';
-import '../providers/users_provider.dart';
+import '../providers/tmdb_provider.dart';
 import '../widgets/user_card.dart';
+import '../widgets/movie_card.dart';
+import '../widgets/loader.dart';
 
 
 
@@ -23,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   TabController _tabControllerBottom;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  UsersProvider usersProvider;
+  TmdbProvider tmdbProvider;
 
   void initState() {
      _tabControllerTop = TabController(length: 5, vsync: this );
@@ -37,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget build(context) {
 
-    usersProvider = Provider.of<UsersProvider>(context);
+    tmdbProvider = Provider.of<TmdbProvider>(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -79,40 +81,73 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       body: Container(
         color: Colors.transparent,
         padding: EdgeInsets.all(10.0),
-        child: FutureBuilder(
-          future: usersProvider.getUsers(),
-          builder: ( context, snapshot ) {
+        child: TabBarView(
+          controller: _tabControllerTop,
+          children: <Widget>[
 
-            if (snapshot.hasData) {
+            FutureBuilder(
+              future: tmdbProvider.getUsers(),
+              builder: ( context, snapshot ) {
 
-              return StaggeredGridView.countBuilder(
-                controller: _controller,
-                crossAxisCount: 2,
-                itemCount: snapshot.data.length,
-                itemBuilder: (BuildContext context, int i) {
-                  return UserCard( snapshot.data[i], index: i, );
-                },
-                staggeredTileBuilder: (int i) {
-                  if ( i == 0 ) {
-                    return StaggeredTile.fit(2);
-                  }
+                if (snapshot.hasData) {
 
-                  return StaggeredTile.fit(1);
-                },
-                mainAxisSpacing: 20.0,
-                crossAxisSpacing: 20.0,
-              );
+                  return StaggeredGridView.countBuilder(
+                    controller: _controller,
+                    crossAxisCount: 2,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int i) {
+                      return UserCard( snapshot.data[i], index: i, );
+                    },
+                    staggeredTileBuilder: (int i) {
+                      if ( i == 0 ) {
+                        return StaggeredTile.fit(2);
+                      }
 
-            } 
+                      return StaggeredTile.fit(1);
+                    },
+                    mainAxisSpacing: 20.0,
+                    crossAxisSpacing: 20.0,
+                  );
 
-            return Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xffffcc00))
-              )
-            );
+                } 
+
+                return Loader();
+
+              },
+            ),
+
+            FutureBuilder(
+              future: tmdbProvider.getMovies(),
+              builder: ( context, snapshot ) {
+
+                if (snapshot.hasData) {
+
+                  return StaggeredGridView.countBuilder(
+                    controller: _controller,
+                    crossAxisCount: 2,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int i) {
+                      return MovieCard( snapshot.data[i], index: i, );
+                    },
+                    staggeredTileBuilder: (int i) {
+                      return StaggeredTile.fit(1);
+                    },
+                    mainAxisSpacing: 20.0,
+                    crossAxisSpacing: 20.0,
+                  );
+
+                } 
+
+                return Loader();
 
 
-          },
+              },
+            ),
+            Text('treci'),
+            Text('cetvrti'),
+            Text('peti'),
+
+          ],
         )
       ),
       drawer: Drawer(
@@ -197,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   _scrollListener() {
 
     if (_controller.offset >= _controller.position.maxScrollExtent && !_controller.position.outOfRange)
-      usersProvider.fetchUsers(++_currentPage); 
+      tmdbProvider.fetchUsers(++_currentPage); 
     
   }
 
@@ -235,7 +270,5 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
 
   }
-
-
 
 }
