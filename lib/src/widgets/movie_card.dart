@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
-class MovieCard extends StatelessWidget {
+class MovieCard extends StatefulWidget {
 
-  const MovieCard(this.data, {this.index, this.onTap});
+  const MovieCard(this.data, {this.index});
 
   final data;
   final int index;
-  final Function onTap;
+
+  @override
+  _MovieCardState createState() => _MovieCardState();
+}
+
+class _MovieCardState extends State<MovieCard> {
+
+  var favorite = false;
 
   @override
   Widget build(BuildContext context) {
@@ -15,19 +23,19 @@ class MovieCard extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(
           width: 1.0,
-          color: Colors.white
+          color: Colors.white.withOpacity(0.3)
         ),
         borderRadius: BorderRadius.all(
-            Radius.circular(20.0) 
+            Radius.circular(21.0) 
         ),
         color: Colors.black,
       ),
       child: Stack(
         alignment: Alignment.center,  
         children: <Widget>[
-          _showImage(),
+          _showImage(context),
           _showTopIcon(),
-          _showBottomIcons()
+          _showBottomIcons(context)
         ],
       )
     );
@@ -51,22 +59,29 @@ class MovieCard extends StatelessWidget {
 
   }
 
-  Widget _showBottomIcons() {
+  Widget _showBottomIcons(context) {
 
     return Positioned(
-      bottom: 10.0,
+      bottom: 0.0,
       right: 10.0,
       child: Row(
         children: <Widget>[
-          Icon( 
-            Icons.favorite_border, 
-            size: 22.0,
-            color: Colors.white,
+          IconButton(
+            icon: Icon(
+              ( favorite ) ? Icons.favorite : Icons.favorite_border,
+              size: 22,
+              color: ( favorite ) ? Colors.red : Colors.white
+            ),
+            onPressed: () {
+              setState(() {
+                favorite = !favorite;
+              });
+            },
           ),
           Padding(
-            padding: const EdgeInsets.only( top: 4.0, right: 10.0),
+            padding: const EdgeInsets.only( top: 4.0 ),
             child: Text(
-              data.popularity.toStringAsFixed(1) + 'k',
+              widget.data.popularity.toStringAsFixed(1) + 'k',
               style: TextStyle(
                 color: Colors.white, 
                 fontSize: 10.0
@@ -74,10 +89,19 @@ class MovieCard extends StatelessWidget {
 
             ),
           ),
-          Icon( 
-            Icons.share, 
-            size: 22.0,
-            color: Colors.white,
+          IconButton(
+            icon: Icon(
+              Icons.share,
+              size: 22,
+              color: Colors.white
+            ),
+            onPressed: () {
+              final RenderBox box = context.findRenderObject();
+              Share.share('Check movie ' + widget.data.name,
+                  sharePositionOrigin:
+                  box.localToGlobal(Offset.zero) &
+                  box.size);
+            },
           ),
         ],
       )
@@ -85,16 +109,16 @@ class MovieCard extends StatelessWidget {
 
   }
 
-  Widget _showImage() {
+  Widget _showImage(context) {
 
-    final imageWidget = data.poster.isEmpty 
+    final imageWidget = widget.data.poster.isEmpty 
       ? Image.asset('assets/images/loader.png')
       : FadeInImage.assetNetwork(
           excludeFromSemantics: true,
           fadeInDuration: Duration(milliseconds: 300),
           placeholder: 'assets/images/loader.png',
-          image: 'https://image.tmdb.org/t/p/w300/' + data.poster,
-          height: 180.0,
+          image: 'https://image.tmdb.org/t/p/w300/' + widget.data.poster,
+          height: widget.index % 2 == 0 ? 180.0 : 225.0,
           fit: BoxFit.fitWidth
         );
  
@@ -102,9 +126,13 @@ class MovieCard extends StatelessWidget {
       width: double.infinity,
       child: ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(20.0)),
-        child: imageWidget
+        child: GestureDetector(
+          onTap: () {
+            print('presssed');
+          },
+          child: imageWidget,
+        )
       ),
     );
   }
-
 }

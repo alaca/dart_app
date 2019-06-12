@@ -12,7 +12,7 @@ class TmdbProvider with ChangeNotifier {
 
   List<UserModel> _users = [];
   List<MovieModel> _movies = [];
-
+  
   getUsers() async {
 
     // Initial fetch
@@ -34,13 +34,17 @@ class TmdbProvider with ChangeNotifier {
   }
 
   fetchUsers(int page ) async {
-
-    print(page);
-
     _users.addAll(await _repository.getPopular(page));
-
     notifyListeners();
+  }
 
+  fetchUser(int id ) async {
+    return await _repository.getUser(id);
+  }
+
+  fetchMovies(int page ) async {
+    _movies.addAll(await _repository.getMovies(page));
+    notifyListeners();
   }
 
 }

@@ -19,8 +19,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
-  int _currentPage = 1;
-  ScrollController _controller = ScrollController();
+  int _currentPageUsers = 2;
+  int _currentPageMovies = 2;
+  ScrollController _usersController = ScrollController();
+  ScrollController _moviesController = ScrollController();
   TabController _tabControllerTop;
   TabController _tabControllerBottom;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -30,7 +32,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
      _tabControllerTop = TabController(length: 5, vsync: this );
      _tabControllerBottom = TabController(length: 5, vsync: this );
-    _controller.addListener(_scrollListener);
+    _usersController.addListener(_usersScrollListener);
+    _moviesController.addListener(_moviesScrollListener);
 
     
     super.initState();
@@ -92,18 +95,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 if (snapshot.hasData) {
 
                   return StaggeredGridView.countBuilder(
-                    controller: _controller,
+                    controller: _usersController,
                     crossAxisCount: 2,
                     itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext context, int i) {
-                      return UserCard( snapshot.data[i], index: i, );
+                      return UserCard( snapshot.data[i], index: i );
                     },
                     staggeredTileBuilder: (int i) {
-                      if ( i == 0 ) {
-                        return StaggeredTile.fit(2);
-                      }
-
-                      return StaggeredTile.fit(1);
+                       return StaggeredTile.fit(1);
                     },
                     mainAxisSpacing: 20.0,
                     crossAxisSpacing: 20.0,
@@ -123,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 if (snapshot.hasData) {
 
                   return StaggeredGridView.countBuilder(
-                    controller: _controller,
+                    controller: _moviesController,
                     crossAxisCount: 2,
                     itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext context, int i) {
@@ -229,10 +228,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
 
-  _scrollListener() {
+  _usersScrollListener() {
 
-    if (_controller.offset >= _controller.position.maxScrollExtent && !_controller.position.outOfRange)
-      tmdbProvider.fetchUsers(++_currentPage); 
+    if (_usersController.offset >= _usersController.position.maxScrollExtent && !_usersController.position.outOfRange)
+      tmdbProvider.fetchUsers(_currentPageUsers++); 
+    
+  }
+
+  _moviesScrollListener() {
+
+    if (_moviesController.offset >= _moviesController.position.maxScrollExtent && !_moviesController.position.outOfRange)
+      tmdbProvider.fetchMovies(_currentPageMovies++); 
     
   }
 
