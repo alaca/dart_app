@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../providers/tmdb_provider.dart';
 import '../widgets/loader.dart';
-import '../widgets/user_movie_card.dart';
 
 
 
