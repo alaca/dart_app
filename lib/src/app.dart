@@ -6,6 +6,7 @@ import 'screens/splash_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/user_screen.dart';
 
 class App extends StatelessWidget {
 
@@ -43,6 +44,15 @@ class App extends StatelessWidget {
                 builder: (context) => RegisterScreen()
               );
 
+            case 'user':
+
+              final data = settings.arguments;
+
+              return MaterialPageRoute(
+                builder: (context) => UserScreen( data )
+              );
+
+            
             default:
 
               return MaterialPageRoute(
