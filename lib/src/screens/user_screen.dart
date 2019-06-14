@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../providers/tmdb_provider.dart';
 import '../widgets/loader.dart';
 
@@ -55,12 +56,11 @@ class _UserScreenState extends State<UserScreen> {
           builder: ( context, snapshot ) {
 
             if (snapshot.hasData) {
-
               return ListView(
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      _showImage(snapshot.data),
+                      _showImage(snapshot.data.image),
                       Expanded(
                         child: Padding(
                           padding: EdgeInsets.only(left: 10.0),
@@ -96,15 +96,15 @@ class _UserScreenState extends State<UserScreen> {
   }
 
 
-  Widget _showImage(data) {
+  Widget _showImage(image) {
 
-    final imageWidget = data.image.isEmpty 
+    final imageWidget = image == null || image.isEmpty 
       ? Image.asset('assets/images/loader.png', width: 150.0)
       : FadeInImage.assetNetwork(
           excludeFromSemantics: true,
           fadeInDuration: Duration(milliseconds: 300),
           placeholder: 'assets/images/loader.png',
-          image: 'https://image.tmdb.org/t/p/w300/' + data.image,
+          image: 'https://image.tmdb.org/t/p/w300/' + image,
           width: 150.0,
           fit: BoxFit.cover
         );
@@ -117,6 +117,40 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
+
+  Widget _showMovieImage(image) {
+
+    final imageWidget = image == null || image.isEmpty 
+      ? Image.asset('assets/images/loader.png')
+      : FadeInImage.assetNetwork(
+          excludeFromSemantics: true,
+          fadeInDuration: Duration(milliseconds: 300),
+          placeholder: 'assets/images/loader.png',
+          image: 'https://image.tmdb.org/t/p/w300/' + image,
+          fit: BoxFit.fitWidth,
+        );
+
+
+    return Container(
+      margin: EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 1.0,
+          color: Colors.white.withOpacity(0.3)
+        ),
+        borderRadius: BorderRadius.all(
+            Radius.circular(21.0) 
+        ),
+        color: Colors.black,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+        child: imageWidget
+      )
+    );
+ 
+
+  }
 
 
 
@@ -144,10 +178,30 @@ class _UserScreenState extends State<UserScreen> {
 
   }
 
-  Widget _showMovies(movies) {
-    print(movies);
+
+  Widget _showMovies( movies ) {
+
+    if ( movies.length > 0 ) {
+
+      return GridView.count(
+        crossAxisCount: 2,
+        physics: ScrollPhysics(), // to disable GridView's scrolling
+        shrinkWrap: true,
+        padding: EdgeInsets.all(0.0),
+        children: List.generate(movies.length, (i) {
+
+          return _showMovieImage(movies[i]['poster_path']);
+
+        }),
+      );
+
+
+    }
 
     return Container();
+
+
+
   }
 
 
